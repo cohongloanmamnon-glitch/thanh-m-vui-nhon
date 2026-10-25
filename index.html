@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thanh âm vui nhộn – Bé vui học chữ d, đ</title>
+<style>
+  :root { --ink:#25345b; --pink:#ff6fae; --blue:#3f8cff; --yellow:#ffd45c; }
+  * { box-sizing:border-box; margin:0; padding:0; user-select:none; }
+  body { min-height:100vh; color:var(--ink); font-family:sans-serif; background:linear-gradient(135deg,#fff8e9,#eaf7ff); }
+  button { font:inherit; cursor:pointer; border:0; }
+  .app { width:min(1400px,100%); margin:auto; padding:clamp(12px,2vw,28px); }
+  .topbar { display:flex; justify-content:space-between; align-items:center; }
+  .pill { background:#fff; border:2px solid #e7e8f5; padding:9px 15px; border-radius:999px; font-weight:800; }
+  h1 { text-align:center; font-size:clamp(30px,4.2vw,58px); color:#ff5597; text-shadow:2px 3px 0 #fff; margin:10px 0; }
+  .subtitle { text-align:center; font-size:clamp(16px,2vw,23px); font-weight:700; margin-bottom:15px; }
+  .screen { display:none; } .screen.active { display:block; animation:pop .35s ease-out; }
+  @keyframes pop { from{opacity:.3; transform:translateY(8px)} to{opacity:1;transform:none} }
+  .panel { background:rgba(255,255,255,.9); border-radius:28px; padding:30px; box-shadow:0 12px 32px #455a7b18; }
+  .hero { display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:center; }
+  .hero h2 { font-size:30px; color:#ff5597; } .hero p { font-size:20px; line-height:1.5; }
+  .letter-pair { display:flex; justify-content:center; gap:20px; }
+  .big-letter { width:150px; height:150px; border-radius:36px; display:grid; place-items:center; color:#fff; font-size:100px; font-weight:bold; }
+  .d-color { background:#ff6fae; transform:rotate(-5deg); } .dd-color { background:#3f8cff; transform:rotate(5deg); }
+  .btn-row { display:flex; gap:10px; margin-top:20px; justify-content:center; }
+  .btn { padding:12px 20px; border-radius:18px; font-weight:bold; font-size:18px; transition:transform .2s; }
+  .btn:hover { transform:scale(1.05); }
+  .primary { background:var(--pink); color:white; } .secondary { background:#e9f3ff; color:#285caa; } .gold { background:var(--yellow); color:#694e00; }
+  .game-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; }
+  .scoreboard { display:flex; gap:10px; }
+  .score { padding:10px 15px; border-radius:16px; background:#fff; font-weight:bold; border:2px solid #edf0f7; }
+  .instruction-bar { text-align:center; background:#fff2bd; padding:12px; border-radius:18px; font-weight:bold; font-size:20px; margin-bottom:15px; }
+  .play-area { display:grid; grid-template-columns:1.5fr 1fr; gap:20px; }
+  .cards-panel { background:#fff; border-radius:24px; padding:15px; box-shadow:0 5px 15px rgba(0,0,0,0.05); }
+  .cards-title { font-size:20px; font-weight:bold; text-align:center; margin-bottom:15px; }
+  .cards-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:15px; }
+  .card { background:#fff; border:3px solid #e7ebf5; border-radius:20px; padding:10px; text-align:center; cursor:grab; position:relative; transition:all 0.2s; }
+  .card:hover { border-color:#a9c7ff; transform:translateY(-5px); }
+  .card.selected { border-color:var(--pink); transform:scale(1.05); }
+  .card.done { opacity:0.4; cursor:default; pointer-events:none; filter:grayscale(1); }
+  .card img, .card .emoji { height:120px; object-fit:contain; margin:auto; display:flex; align-items:center; justify-content:center; font-size:80px; }
+  .card .number { position:absolute; top:5px; left:5px; background:var(--yellow); width:25px; height:25px; border-radius:50%; font-weight:bold; line-height:25px; }
+  .baskets { display:grid; grid-template-columns:1fr 1fr; gap:15px; }
+  .basket { height:220px; display:flex; flex-direction:column; align-items:center; justify-content:center; border:4px dashed #ff9fc6; border-radius:24px; background:#fff4f9; transition:all 0.2s; cursor:pointer; }
+  .basket.blue-basket { border-color:#8ac6ff; background:#f1f9ff; }
+  .basket.over, .basket:hover { transform:scale(1.03); border-style:solid; }
+  .basket .letter { font-size:80px; font-weight:bold; }
+  .feedback { text-align:center; font-size:24px; font-weight:bold; margin:20px 0; min-height:30px; }
+  .feedback.good { color:#16884e; } .feedback.bad { color:#c23b61; }
+  .bottom-controls { display:flex; justify-content:center; gap:10px; }
+  .small-btn { padding:10px 15px; border-radius:14px; background:#fff; font-weight:bold; border:2px solid #e9ecf5; }
+  .modal { position:fixed; inset:0; display:none; place-items:center; background:rgba(0,0,0,0.5); z-index:10; }
+  .modal.show { display:grid; }
+  .modal-card { background:#fff; padding:40px; border-radius:24px; text-align:center; width:400px; }
+  .modal-card h2 { color:var(--pink); margin-bottom:15px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="pill">🌈 LỚP HỌC VUI NHỘN</div>
+    <div class="pill">🎯 Làm quen chữ cái: d – đ</div>
+  </div>
+  <h1>Thanh âm vui nhộn</h1>
+  <p class="subtitle">Bé cùng tìm chữ d và chữ đ trong những hình ảnh đáng yêu!</p>
+
+  <section id="start-screen" class="screen active">
+    <div class="panel hero">
+      <div>
+        <h2>🎁 Sẵn sàng khám phá chưa?</h2>
+        <p>Lắng nghe âm thanh và đưa thẻ tranh vào đúng giỏ chữ cái.</p>
+        <div class="btn-row">
+          <button class="btn primary" onclick="startGame()">▶ Bắt đầu chơi</button>
+          <button class="btn secondary" onclick="playSound('intro')">🔊 Nghe hướng dẫn</button>
+          <button class="btn gold" id="music-btn" onclick="toggleMusic()">🔈 Tắt nhạc</button>
+        </div>
+      </div>
+      <div class="letter-pair">
+        <div class="big-letter d-color">d</div>
+        <div class="big-letter dd-color">đ</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="game-screen" class="screen">
+    <div class="game-head">
+      <div class="scoreboard">
+        <div class="score pink">Hoa Hồng: <span id="score-pink">0</span></div>
+        <div class="score blue">Mặt Trời: <span id="score-blue">0</span></div>
+      </div>
+      <div class="pill">Lượt: <strong id="turn-label">Hoa Hồng</strong></div>
+    </div>
+    
+    <div class="instruction-bar">👀 Lắng nghe và chọn đúng giỏ chữ cái nhé!</div>
+    
+    <div class="play-area">
+      <div class="cards-panel">
+        <p class="cards-title">🖼️ Chọn một thẻ tranh</p>
+        <div class="cards-grid" id="cards-grid"></div>
+      </div>
+      <div class="cards-panel">
+        <p class="cards-title">🧺 Đưa tranh vào giỏ</p>
+        <div class="baskets">
+          <div class="basket" id="basket-d" onclick="chooseBasket('d')">
+            <div class="letter">d</div><strong>Giỏ chữ d</strong>
+          </div>
+          <div class="basket blue-basket" id="basket-dd" onclick="chooseBasket('dd')">
+            <div class="letter">đ</div><strong>Giỏ chữ đ</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div id="feedback" class="feedback">Bé hãy chọn thẻ tranh đầu tiên nào!</div>
+    
+    <div class="bottom-controls">
+      <button class="small-btn" onclick="playSound('intro')">🔊 Hướng dẫn</button>
+      <button class="small-btn" onclick="resetGame()">↻ Chơi lại</button>
+      <button class="small-btn" onclick="goHome()">⌂ Trang chủ</button>
+    </div>
+  </section>
+</div>
+
+<div class="modal" id="end-modal">
+  <div class="modal-card">
+    <h2>🎉 Cả lớp thật giỏi!</h2>
+    <p id="end-message"></p>
+    <div class="btn-row">
+      <button class="btn primary" onclick="resetGame()">↻ Chơi lại</button>
+      <button class="btn secondary" onclick="goHome()">⌂ Trang chủ</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // --- TÊN FILE ĐÃ ĐƯỢC CHUẨN HÓA KHỚP 100% VỚI FILE TRÊN MÁY BẠN ---
+  const AUDIO_SRC = {
+    intro: "lời hướng dẫn.m4a",
+    success: "bé giỏi quá .m4a",      // CÓ DẤU CÁCH
+    fail: "bé làm lại nhé .m4a"       // CÓ DẤU CÁCH
+  };
+
+  const bgMusic = new Audio("nhac_nen.mp3");
+  bgMusic.loop = true; bgMusic.volume = 0.3;
+
+  const itemsData = [
+    { id: "goat", img: "con_dê.png", emoji: "🐐", target: "d", audioSrc: "con dê.m4a" },
+    { id: "ostrich", img: "đà-điểu.png", emoji: "🦤", target: "dd", audioSrc: "đà điểu .m4a" },  // CÓ DẤU CÁCH
+    { id: "watermelon", img: "dưa_hấu.png", emoji: "🍉", target: "d", audioSrc: "dưa hấu .m4a" }, // CÓ DẤU CÁCH
+    { id: "cricket", img: "con_dế.png", emoji: "🦗", target: "d", audioSrc: "con dế.m4a" },
+    { id: "papaya", img: "đu-đủ.png", emoji: "🥭", target: "dd", audioSrc: "đu đủ.m4a" },
+    { id: "pumpkin", img: "bí_đỏ.png", emoji: "🎃", target: "dd", audioSrc: "bí đỏ.m4a" }
+  ];
+
+  const $ = id => document.getElementById(id);
+  let state = { scores: { pink:0, blue:0 }, team: "pink", selected: null, done: 0, musicOn: true };
+  let currentAudio = null;
+
+  function playSound(type, id = null) {
+    if (currentAudio) { currentAudio.pause(); currentAudio.currentTime = 0; }
+    
+    let src = "";
+    if (type === 'item') {
+      src = itemsData.find(x => x.id === id).audioSrc;
+    } else {
+      src = AUDIO_SRC[type];
+    }
+
+    currentAudio = new Audio(src);
+    currentAudio.play().catch(e => console.log("Lỗi phát âm thanh:", e));
+  }
+
+  function toggleMusic() {
+    state.musicOn = !state.musicOn;
+    $("music-btn").textContent = state.musicOn ? "🔈 Tắt nhạc" : "🔇 Bật nhạc";
+    if (state.musicOn && $("game-screen").classList.contains("active")) bgMusic.play();
+    else bgMusic.pause();
+  }
+
+  function renderCards() {
+    const grid = $("cards-grid"); grid.innerHTML = "";
+    itemsData.forEach((item, i) => {
+      const isDone = item.done;
+      const isSel = state.selected === item.id;
+      grid.innerHTML += `
+        <div class="card ${isDone ? 'done' : ''} ${isSel ? 'selected' : ''}" 
+             onclick="selectCard('${item.id}')" draggable="${!isDone}"
+             ondragstart="drag(event, '${item.id}')">
+          <span class="number">${i + 1}</span>
+          <img src="${item.img}" onerror="this.outerHTML='<div class=\\'emoji\\'>${item.emoji}</div>'">
+        </div>`;
+    });
+  }
+
+  function selectCard(id) {
+    if (itemsData.find(x => x.id === id).done) return;
+    state.selected = id;
+    renderCards();
+    setFeedback("Hãy chọn giỏ chữ cái phù hợp!");
+    playSound('item', id);
+  }
+
+  function drag(e, id) { state.selected = id; playSound('item', id); }
+
+  function chooseBasket(target) {
+    if (!state.selected) return setFeedback("Bé hãy chạm chọn một thẻ tranh trước nhé!", "bad");
+    const item = itemsData.find(x => x.id === state.selected);
+    
+    if (item.target === target) {
+      item.done = true;
+      state.scores[state.team]++;
+      state.done++;
+      setFeedback("🎉 Chính xác! Bé giỏi quá!", "good");
+      playSound("success");
+      state.selected = null;
+      
+      if (state.done === itemsData.length) setTimeout(showEnd, 1500);
+      else state.team = state.team === "pink" ? "blue" : "pink";
+    } else {
+      setFeedback("🌱 Chưa chính xác rồi! Bé làm lại nhé.", "bad");
+      playSound("fail");
+    }
+    updateUI();
+  }
+
+  function setFeedback(msg, type="") {
+    $("feedback").textContent = msg; 
+    $("feedback").className = "feedback " + type;
+  }
+
+  function updateUI() {
+    $("score-pink").textContent = state.scores.pink;
+    $("score-blue").textContent = state.scores.blue;
+    $("turn-label").textContent = state.team === "pink" ? "Hoa Hồng" : "Mặt Trời";
+    renderCards();
+  }
+
+  function showEnd() {
+    $("end-message").innerHTML = `Hoa Hồng: ${state.scores.pink} ⭐ <br> Mặt Trời: ${state.scores.blue} ⭐ <br> Lớp mình rất xuất sắc!`;
+    $("end-modal").classList.add("show");
+  }
+
+  function startGame() {
+    $("start-screen").classList.remove("active");
+    $("game-screen").classList.add("active");
+    if(state.musicOn) bgMusic.play().catch(e=>{});
+  }
+
+  function resetGame() {
+    state.scores = { pink:0, blue:0 }; state.team = "pink"; state.selected = null; state.done = 0;
+    itemsData.forEach(i => i.done = false);
+    $("end-modal").classList.remove("show");
+    setFeedback("Bé hãy chọn thẻ tranh đầu tiên nào!");
+    updateUI();
+  }
+
+  function goHome() {
+    $("game-screen").classList.remove("active");
+    $("start-screen").classList.add("active");
+    $("end-modal").classList.remove("show");
+    bgMusic.pause(); bgMusic.currentTime = 0;
+  }
+
+  // Setup Kéo thả cho Giỏ
+  document.querySelectorAll('.basket').forEach(b => {
+    b.ondragover = e => e.preventDefault();
+    b.ondrop = e => { e.preventDefault(); chooseBasket(b.id === 'basket-d' ? 'd' : 'dd'); }
+  });
+
+  updateUI();
+</script>
+</body>
+</html>
